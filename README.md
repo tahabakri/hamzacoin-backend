@@ -8,7 +8,7 @@
 ![Groq](https://img.shields.io/badge/Groq-Llama%203.3%2070B-FF6B35)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-This is one of three repos. The others are the [smart contracts](https://github.com/tahabakri/crypto_class) and the [frontend](https://github.com/tahabakri/hamzacoin-website/tree/main/hamzacoin-react). You need all three running to demo the project end-to-end.
+This is one of three repos. The others are the [smart contracts](https://github.com/tahabakri/hamzacoin-contract) and the [frontend](https://github.com/tahabakri/hamzacoin-website). You need all three running to demo the project end-to-end.
 
 ---
 
@@ -42,7 +42,7 @@ Follow this guide and you will have:
 | **HamzaCoin (ERC20)** | `0x619F30ec004442cdc3BE060FC927A3688054e6c3` |
 | **Network** | Sepolia Testnet (chain ID `11155111`) |
 | **Etherscan** | [sepolia.etherscan.io/address/0x619F30ec004442cdc3BE060FC927A3688054e6c3](https://sepolia.etherscan.io/address/0x619F30ec004442cdc3BE060FC927A3688054e6c3) |
-| **Smart contract repo** | [github.com/tahabakri/crypto_class](https://github.com/tahabakri/crypto_class) |
+| **Smart contract repo** | [github.com/tahabakri/hamzacoin-contract](https://github.com/tahabakri/hamzacoin-contract) |
 | **Frontend repo** | [github.com/tahabakri/hamzacoin-website](https://github.com/tahabakri/hamzacoin-website) |
 
 ---
@@ -117,7 +117,7 @@ This repo is the middle box: it talks to Wikipedia (via the frontend), Groq, and
 | MetaMask | Wallet that holds test ETH and signs claims | Browser extension from [metamask.io](https://metamask.io) |
 | Sepolia ETH | Pays gas on the test network when claiming | Free from [faucet.alchemy.com](https://www.alchemy.com/faucets/ethereum-sepolia) |
 | Groq API key | Used by the backend to write quiz questions | [console.groq.com/keys](https://console.groq.com/keys) → Sign in → API Keys → **Create API Key** → copy. Free tier is generous for development. |
-| A deployed HamzaFaucet | The contract this backend signs messages for | Deploy from the [contracts repo](https://github.com/tahabakri/crypto_class). See "Step 2" below. |
+| A deployed HamzaFaucet | The contract this backend signs messages for | Deploy from the [contracts repo](https://github.com/tahabakri/hamzacoin-contract). See "Step 2" below. |
 | VS Code (recommended) | Editor with TypeScript + ESLint | [code.visualstudio.com](https://code.visualstudio.com) |
 
 > Use a brand-new MetaMask account that has never held real money. The `SIGNER_PRIVATE_KEY` you put here gives anyone who has it the power to mint HMZ rewards — treat it as secret as any production key.
@@ -132,8 +132,9 @@ This is a three-piece project. If you're starting from this repo, you still need
 
 ```bash
 # in any working folder (e.g. C:/Users/you/dev/)
-git clone https://github.com/tahabakri/crypto_class.git
+git clone https://github.com/tahabakri/hamzacoin-contract.git
 git clone https://github.com/tahabakri/hamzacoin-website.git
+git clone https://github.com/tahabakri/hamzacoin-backend.git
 ```
 
 You should end up with:
@@ -498,7 +499,6 @@ This codebase runs cleanly on a single Node host (Railway, Fly, Render). Going s
 
 ## Companion repos
 
-- **Smart contracts**: [github.com/tahabakri/crypto_class](https://github.com/tahabakri/crypto_class)
-- **Frontend + backend monorepo (this lives here)**: [github.com/tahabakri/hamzacoin-website](https://github.com/tahabakri/hamzacoin-website)
-  - `hamzacoin-react/` — React + Vite + ethers v6 dApp
-  - `hamzacoin-backend/` — this folder
+- **Smart contracts**: [github.com/tahabakri/hamzacoin-contract](https://github.com/tahabakri/hamzacoin-contract)
+- **Frontend (React + Vite + ethers v6)**: [github.com/tahabakri/hamzacoin-website](https://github.com/tahabakri/hamzacoin-website)
+- **Backend (this repo)**: [github.com/tahabakri/hamzacoin-backend](https://github.com/tahabakri/hamzacoin-backend)
