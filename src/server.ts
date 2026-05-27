@@ -11,11 +11,25 @@ import { signerAddress } from "./lib/signer";
 
 const app = express();
 
-// CORS — allow the Vite dev server (5173) and the alternate port (5174).
-// Production deployments should narrow this further.
+// CORS allowlist:
+//   - http://localhost:5173 / :5174      Vite dev server (default + alt port)
+//   - https://hamzacoin-website.vercel.app   production frontend
+//   - Vercel preview deploys for this project, matched via regex:
+//       hamzacoin-website-<hash>-tahas-projects-8689807a.vercel.app
+//
+// `cors` accepts a mixed string/RegExp array and checks each request's
+// Origin header against every entry. Same-origin requests (curl, server
+// probes, no Origin) are also permitted.
+const corsAllowlist: (string | RegExp)[] = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://hamzacoin-website.vercel.app",
+  /^https:\/\/hamzacoin-website-.*-tahas-projects-8689807a\.vercel\.app$/,
+];
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: corsAllowlist,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
   }),
