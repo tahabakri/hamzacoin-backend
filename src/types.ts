@@ -53,3 +53,30 @@ export type VerifyAndSignResponse = {
   explanations?: string[]; // explanations for missed questions (revealed after grading)
   message?: string;
 };
+
+// ----------------------------------------------------------------------------
+// Holders — GET /api/holders (Etherscan-backed all-time holder count)
+// ----------------------------------------------------------------------------
+
+export type HolderEntry = {
+  address: string;
+  /** Raw token base units (wei) as a decimal string; HMZ has 18 decimals. */
+  balance: string;
+};
+
+export type HoldersResult = {
+  holderCount: number;
+  holders: HolderEntry[];
+  /** Highest block number seen while scanning the Transfer log. */
+  asOfBlock: number;
+};
+
+// Cached entry — mirrors CachedQuiz: payload + createdAt for lazy TTL eviction.
+export type CachedHolders = HoldersResult & {
+  createdAt: number; // epoch ms
+};
+
+// What GET /api/holders returns on success.
+export type GetHoldersResponse = HoldersResult & {
+  source: "etherscan";
+};

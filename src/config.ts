@@ -27,6 +27,12 @@ function optional(name: string, fallback: string): string {
 
 const GROQ_API_KEY = required("GROQ_API_KEY");
 
+// Etherscan API key for GET /api/holders. OPTIONAL on purpose: if it's missing
+// the server still boots (quiz + verify keep working) and /api/holders returns
+// 503, so the frontend falls back to its recent-window holder count. Making
+// this required() would crash the whole backend until the key is set.
+const ETHERSCAN_API_KEY = optional("ETHERSCAN_API_KEY", "");
+
 // Normalize the private key (allow with or without 0x prefix).
 const rawPk = required("SIGNER_PRIVATE_KEY");
 const SIGNER_PRIVATE_KEY = rawPk.startsWith("0x") ? rawPk : `0x${rawPk}`;
@@ -72,6 +78,7 @@ try {
 
 export const config = {
   GROQ_API_KEY,
+  ETHERSCAN_API_KEY,
   SIGNER_PRIVATE_KEY,
   SIGNER_ADDRESS: signerAddress,
   FAUCET_CONTRACT_ADDRESS,

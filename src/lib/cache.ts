@@ -12,7 +12,7 @@
 // Vercel KV — the keys/values are tiny.
 // ============================================================================
 
-import type { CachedQuiz } from "../types";
+import type { CachedHolders, CachedQuiz } from "../types";
 
 const TTL_MS = 60 * 60 * 1000; // 1 hour
 
@@ -30,6 +30,29 @@ export function getQuiz(articleHash: string): CachedQuiz | null {
 
 export function putQuiz(articleHash: string, entry: CachedQuiz): void {
   store.set(articleHash, entry);
+}
+
+// ----------------------------------------------------------------------------
+// Holders cache — same lazy-TTL Map pattern, shorter window (5 min). One entry,
+// keyed by the token contract address. Avoids hammering Etherscan: at most one
+// full-history rebuild per 5 minutes regardless of request volume.
+// ----------------------------------------------------------------------------
+const HOLDERS_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+const holdersStore = new Map<string, CachedHolders>();
+
+export function getHolders(key: string): CachedHolders | null {
+  const entry = holdersStore.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.createdAt > HOLDERS_TTL_MS) {
+    holdersStore.delete(key);
+    return null;
+  }
+  return entry;
+}
+
+export function putHolders(key: string, entry: CachedHolders): void {
+  holdersStore.set(key, entry);
 }
 
 // Useful for /health diagnostics — never expose this on a public endpoint.

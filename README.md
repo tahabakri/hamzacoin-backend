@@ -171,6 +171,7 @@ Fill in `.env`:
 | Variable | What it is | Where to get it |
 | --- | --- | --- |
 | `GROQ_API_KEY` | Free API key for the LLM that writes the quiz. | [console.groq.com/keys](https://console.groq.com/keys) → Sign in → API Keys → Create API Key → copy. |
+| `ETHERSCAN_API_KEY` | Optional. Free key that powers `GET /api/holders` (all-time holder count). If unset, that endpoint returns 503 and the frontend falls back to its recent-window count — the backend still boots. | [etherscan.io/myapikey](https://etherscan.io/myapikey) → Sign in → Add → copy. One V2 key works for Sepolia. |
 | `SIGNER_PRIVATE_KEY` | Private key of the wallet whose public address you set as `TRUSTED_SIGNER_ADDRESS` when deploying the faucet. With or without the `0x` prefix. **NEVER commit this.** | MetaMask → account name → **Account Details** → **Export Private Key**. Use a dev-only wallet. |
 | `FAUCET_CONTRACT_ADDRESS` | The deployed HamzaFaucet address on Sepolia. | The address printed by `deploy-faucet.js` in Step 2. |
 | `HMZ_CONTRACT_ADDRESS` | Optional. Defaults to the live HamzaCoin at `0x619F30ec004442cdc3BE060FC927A3688054e6c3`. | Only set if you deployed your own token. |
@@ -351,6 +352,35 @@ Response (`score === 0`):
 `HTTP 410` if the quiz isn't in the cache anymore (server restarted, or the 1-hour TTL expired). The frontend should re-fetch with `/api/generate-quiz`.
 
 Rate limit: 50 per hour per `userAddress`.
+
+### `GET /api/holders`
+
+Returns the **all-time** HMZ holder count. Etherscan's free API has no token-holders endpoint, so the backend pulls every `Transfer` event via the free `getLogs` endpoint (Etherscan V2, paginated) and replays them into running per-address balances; addresses with a positive balance are the holders. The result is cached in memory for **5 minutes**.
+
+Response (`200`):
+
+```json
+{
+  "holderCount": 6,
+  "holders": [
+    { "address": "0x…", "balance": "5000000000000000000" }
+  ],
+  "asOfBlock": 9123456,
+  "source": "etherscan"
+}
+```
+
+`balance` is in raw base units (wei); HMZ has 18 decimals.
+
+- `HTTP 503 { "error": "Holder index not configured" }` when `ETHERSCAN_API_KEY` is unset — the frontend falls back to its recent-window count.
+- `HTTP 502` if Etherscan errors or rate-limits (`"Max rate limit reached"`).
+- `HTTP 429` if a single IP exceeds 60 requests/hour (the cache means real Etherscan traffic is at most one rebuild per 5 minutes).
+
+Example:
+
+```bash
+curl http://localhost:3001/api/holders
+```
 
 ---
 

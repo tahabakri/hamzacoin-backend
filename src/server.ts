@@ -7,6 +7,7 @@ import cors from "cors";
 import { config } from "./config";
 import { quizRouter } from "./routes/quiz";
 import { verifyRouter } from "./routes/verify";
+import { holdersRouter } from "./routes/holders";
 import { signerAddress } from "./lib/signer";
 
 const app = express();
@@ -51,6 +52,7 @@ app.get("/health", (_req: Request, res: Response) => {
 
 app.use("/api", quizRouter);
 app.use("/api", verifyRouter);
+app.use("/api", holdersRouter);
 
 // 404 fallback.
 app.use((req: Request, res: Response) => {
